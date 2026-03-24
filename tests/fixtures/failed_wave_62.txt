@@ -1,0 +1,9 @@
+Wave: 9, Split: 04:26 (+04:26)
+Wave: 18, Split: 11:47 (+07:21)
+Wave: 25, Split: 20:57 (+09:10)
+Wave: 35, Split: 32:00 (+11:02)
+Wave: 42, Split: 43:05 (+11:05)
+Wave: 50, Split: 58:33 (+15:28)
+Wave: 57, Split: 71:30 (+12:56)
+Wave: 60, Split: 79:12 (+07:42)
+Duration (Failed): 87:09.6

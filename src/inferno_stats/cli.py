@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 from pathlib import Path
 
 import click
@@ -15,6 +16,7 @@ from inferno_stats.display import (
     render_comparison,
     render_history_table,
     render_stats_summary,
+    set_active_theme,
 )
 from inferno_stats.models import CharacterProfile
 from inferno_stats.share import export_markdown, export_svg
@@ -24,7 +26,19 @@ from inferno_stats.store import (
     load_profile,
     tag_attempt as store_tag_attempt,
 )
-from inferno_stats.theme import OSRS_THEME
+
+
+COMMANDS_EPILOG = """\b
+Commands:
+  inferno stats              Summary dashboard with death heatmap
+  inferno history            All attempts in a table
+  inferno attempt N          Detailed splits for attempt #N
+  inferno pb                 Personal best breakdown
+  inferno progress           Trend analysis + smart commentary
+  inferno compare N M        Side-by-side two attempts
+  inferno tag N [OPTIONS]    Tag with --setup, --task/--no-task, --notes
+  inferno share [OPTIONS]    Export as --format svg/md
+"""
 
 
 class InfernoContext:
@@ -38,7 +52,26 @@ class InfernoContext:
 pass_ctx = click.make_pass_decorator(InfernoContext)
 
 
-@click.group()
+def common_options(f):
+    """Add --theme to any subcommand. Applied before pass_ctx resolves."""
+    @click.option(
+        "--theme",
+        type=click.Choice(["classic", "clean"]),
+        default="clean",
+        help="Display theme (classic = full color, clean = toned down).",
+    )
+    @functools.wraps(f)
+    def wrapper(theme, *args, **kwargs):
+        set_active_theme(theme)
+        # Rebuild console with the right theme
+        ctx_obj = click.get_current_context().find_object(InfernoContext)
+        if ctx_obj:
+            ctx_obj.console = get_console()
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@click.group(epilog=COMMANDS_EPILOG)
 @click.option(
     "--data-dir",
     envvar="INFERNO_STATS_DIR",
@@ -56,6 +89,7 @@ pass_ctx = click.make_pass_decorator(InfernoContext)
 def inferno(ctx: click.Context, data_dir: str | None, character: str | None) -> None:
     """\U0001f525 Inferno Stats — OSRS Inferno attempt tracker and analyzer."""
     data_path = Path(data_dir) if data_dir else get_data_dir()
+    set_active_theme("clean")
     console = get_console()
 
     characters = discover_characters(data_path)
@@ -84,21 +118,24 @@ def inferno(ctx: click.Context, data_dir: str | None, character: str | None) -> 
     ctx.obj = InfernoContext(profile=profile, console=console)
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
+@common_options
 @pass_ctx
 def stats(ctx: InfernoContext) -> None:
     """Summary dashboard — attempts, completions, best wave, death heatmap."""
     render_stats_summary(ctx.console, ctx.profile)
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
+@common_options
 @pass_ctx
 def history(ctx: InfernoContext) -> None:
     """All attempts in a rich table."""
     render_history_table(ctx.console, ctx.profile)
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
+@common_options
 @click.argument("number", type=int)
 @pass_ctx
 def attempt(ctx: InfernoContext, number: int) -> None:
@@ -114,7 +151,8 @@ def attempt(ctx: InfernoContext, number: int) -> None:
     render_attempt_detail(ctx.console, match, avg_splits)
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
+@common_options
 @pass_ctx
 def pb(ctx: InfernoContext) -> None:
     """Personal best breakdown with splits."""
@@ -133,7 +171,8 @@ def pb(ctx: InfernoContext) -> None:
     render_attempt_detail(ctx.console, best, avg_splits)
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
+@common_options
 @pass_ctx
 def progress(ctx: InfernoContext) -> None:
     """Trend analysis with smart commentary."""
@@ -150,7 +189,8 @@ def progress(ctx: InfernoContext) -> None:
     ctx.console.print()
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
+@common_options
 @click.argument("a", type=int)
 @click.argument("b", type=int)
 @pass_ctx
@@ -168,7 +208,7 @@ def compare(ctx: InfernoContext, a: int, b: int) -> None:
     render_comparison(ctx.console, attempt_a, attempt_b)
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
 @click.argument("number", type=int)
 @click.option("--setup", type=click.Choice(GEAR_SETUPS), help="Gear setup used.")
 @click.option("--task/--no-task", default=None, help="Whether on slayer task.")
@@ -196,7 +236,7 @@ def tag(ctx: InfernoContext, number: int, setup: str | None, task: bool | None, 
         ctx.console.print(f"  Notes: [info]{notes}[/info]")
 
 
-@inferno.command()
+@inferno.command(epilog=COMMANDS_EPILOG)
 @click.option(
     "--format",
     "fmt",

@@ -9,19 +9,19 @@ TOTAL_WAVES = 69
 
 # Wave sections with names, enemies, and theming
 WAVE_SECTIONS: dict[tuple[int, int], dict[str, str]] = {
-    (1, 8): {"name": "Warmup", "enemies": "Nibblers + Bats + Blobs", "emoji": "\U0001f987"},
-    (9, 17): {"name": "Melee", "enemies": "+Jal-ImKot", "emoji": "\u2694\ufe0f"},
-    (18, 24): {"name": "Rangers", "enemies": "+Jal-Xil", "emoji": "\U0001f3f9"},
-    (25, 34): {"name": "Pre-Mage", "enemies": "Mixed", "emoji": "\U0001f525"},
-    (35, 41): {"name": "Mages", "enemies": "+Jal-Zek", "emoji": "\U0001f9d9"},
-    (42, 49): {"name": "Full Roster", "enemies": "All types", "emoji": "\U0001f480"},
-    (50, 56): {"name": "Deep Waves", "enemies": "All combined", "emoji": "\U0001f30b"},
-    (57, 59): {"name": "Triple Trouble", "enemies": "Heavy combos", "emoji": "\U0001f624"},
-    (60, 65): {"name": "Final Gauntlet", "enemies": "Complex spawns", "emoji": "\u26a1"},
-    (66, 66): {"name": "Pre-Jad", "enemies": "Last regular wave", "emoji": "\U0001f514"},
-    (67, 67): {"name": "Jad", "enemies": "JalTok-Jad + Healers", "emoji": "\U0001f432"},
-    (68, 68): {"name": "Triple Jads", "enemies": "3x JalTok-Jad", "emoji": "\U0001f432\U0001f432\U0001f432"},
-    (69, 69): {"name": "Zuk", "enemies": "TzKal-Zuk", "emoji": "\U0001f451"},
+    (1, 8): {"name": "Warmup", "short": "Warmup", "enemies": "Nibblers + Bats + Blobs", "emoji": "\U0001f987"},
+    (9, 17): {"name": "Melee", "short": "Melee", "enemies": "+Jal-ImKot", "emoji": "\u2694\ufe0f"},
+    (18, 24): {"name": "Rangers", "short": "Rangers", "enemies": "+Jal-Xil", "emoji": "\U0001f3f9"},
+    (25, 34): {"name": "Pre-Mage", "short": "Pre-Mage", "enemies": "Mixed", "emoji": "\U0001f525"},
+    (35, 41): {"name": "Mages", "short": "Mages", "enemies": "+Jal-Zek", "emoji": "\U0001f9d9"},
+    (42, 49): {"name": "Full Roster", "short": "Roster", "enemies": "All types", "emoji": "\U0001f480"},
+    (50, 56): {"name": "Deep Waves", "short": "Deep", "enemies": "All combined", "emoji": "\U0001f30b"},
+    (57, 59): {"name": "Triple Trouble", "short": "Triples", "enemies": "Heavy combos", "emoji": "\U0001f624"},
+    (60, 65): {"name": "Final Gauntlet", "short": "Finals", "enemies": "Complex spawns", "emoji": "\u26a1"},
+    (66, 66): {"name": "Pre-Jad", "short": "Pre-Jad", "enemies": "Last regular wave", "emoji": "\U0001f514"},
+    (67, 67): {"name": "Jad", "short": "Jad", "enemies": "JalTok-Jad + Healers", "emoji": "\U0001f432"},
+    (68, 68): {"name": "Triple Jads", "short": "3x Jad", "enemies": "3x JalTok-Jad", "emoji": "\U0001f432"},
+    (69, 69): {"name": "Zuk", "short": "Zuk", "enemies": "TzKal-Zuk", "emoji": "\U0001f451"},
 }
 
 # Valid gear setup identifiers

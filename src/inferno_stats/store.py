@@ -33,6 +33,17 @@ def get_meta_path() -> Path:
     return DEFAULT_META_DIR / META_FILENAME
 
 
+def get_share_dir() -> Path:
+    """Return the directory `inferno share` writes to when no --output is given.
+
+    Checks INFERNO_STATS_SHARE_DIR env var first, then falls back to default.
+    """
+    env = os.environ.get("INFERNO_STATS_SHARE_DIR")
+    if env:
+        return Path(env).expanduser()
+    return DEFAULT_META_DIR / "exports"
+
+
 def discover_characters(data_dir: Path | None = None) -> list[str]:
     """List character names found in the data directory."""
     data_dir = data_dir or get_data_dir()

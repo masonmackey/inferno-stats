@@ -23,6 +23,7 @@ from inferno_stats.share import export_markdown, export_svg
 from inferno_stats.store import (
     discover_characters,
     get_data_dir,
+    get_share_dir,
     load_profile,
     tag_attempt as store_tag_attempt,
 )
@@ -249,7 +250,7 @@ def tag(ctx: InfernoContext, number: int, setup: str | None, task: bool | None, 
     "-o",
     type=click.Path(),
     default=None,
-    help="Output file path.",
+    help="Output file path. Defaults to $INFERNO_STATS_SHARE_DIR or ~/.inferno-stats/exports.",
 )
 @pass_ctx
 def share(ctx: InfernoContext, fmt: str, output: str | None) -> None:
@@ -258,9 +259,10 @@ def share(ctx: InfernoContext, fmt: str, output: str | None) -> None:
 
     if output is None:
         ext = "svg" if fmt == "svg" else "md"
-        output = f"inferno-stats-{name_slug}.{ext}"
+        output = get_share_dir() / f"inferno-stats-{name_slug}.{ext}"
 
     path = Path(output)
+    path.parent.mkdir(parents=True, exist_ok=True)
 
     if fmt == "svg":
         export_svg(ctx.profile, path)
